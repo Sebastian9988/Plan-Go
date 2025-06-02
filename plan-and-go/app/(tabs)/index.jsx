@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import TripCard from '../../components/TripCard';
 import TripFormModal from '../../components/TripFormModal';
+import { ScrollView } from 'react-native';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,6 +19,10 @@ export default function HomeScreen() {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleDeleteTrip = (idxToDelete) => {
+    setTrips(prev => prev.filter((_, idx) => idx !== idxToDelete));
   };
 
   const handleSave = () => {
@@ -39,7 +44,18 @@ export default function HomeScreen() {
         Your assistant to organize trips easily and quickly
       </Text>
 
-      {trips.length > 0 && <TripCard trip={trips[0]} />}
+      <ScrollView
+        style={styles.tripsScroll}
+        contentContainerStyle={{ alignItems: 'center' }}
+      >
+        {trips.length > 0 && trips.map((trip, idx) => (
+          <TripCard
+            key={idx}
+            trip={trip}
+            onDelete={() => handleDeleteTrip(idx)}
+          />
+        ))}
+      </ScrollView>
 
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
         <Text style={styles.buttonText}>+ Create new trip</Text>
@@ -60,8 +76,6 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-// ...styles...
 
 const styles = StyleSheet.create({
   container: {
@@ -147,20 +161,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: '#f9f9f9',
   },
-  card: {
+    tripsScroll: {
     width: '100%',
-    backgroundColor: '#e6f2ff',
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 6,
+    maxHeight: 300, // Ajusta este valor según tu preferencia
+    marginBottom: 24,
   },
 });

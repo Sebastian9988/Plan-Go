@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
-export default function TripCard({ trip }) {
+export default function TripCard({ trip, onDelete }) {
   const formatDate = (date) => {
     if (!date) return '';
     return new Date(date).toLocaleDateString();
@@ -9,7 +10,12 @@ export default function TripCard({ trip }) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>{trip.name}</Text>
+      <View style={styles.header}>
+        <Text style={styles.cardTitle}>{trip.name}</Text>
+        <TouchableOpacity onPress={onDelete}>
+          <MaterialIcons name="delete" size={22} color="grey" />
+        </TouchableOpacity>
+      </View>
       <Text>From: {trip.departureCity}</Text>
       <Text>To: {trip.arrivalCity}</Text>
       <Text>Start: {formatDate(trip.startTime)}</Text>
@@ -20,7 +26,7 @@ export default function TripCard({ trip }) {
 
 const styles = StyleSheet.create({
   card: {
-    width: '100%',
+    width: '95%',
     backgroundColor: '#e6f2ff',
     borderRadius: 10,
     padding: 16,
@@ -30,9 +36,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 6,
   },
 });
