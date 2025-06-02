@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Pressable,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import TripCard from '../../components/TripCard';
+import TripFormModal from '../../components/TripFormModal';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -20,14 +12,9 @@ export default function HomeScreen() {
     departureCity: '',
     arrivalCity: '',
   });
-  const [trips, setTrips] = useState([]); // New state for trips
+  const [trips, setTrips] = useState([]);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
-
-  const formatDate = (date) => {
-    if (!date) return '';
-    return new Date(date).toLocaleDateString();
-  };
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -52,99 +39,29 @@ export default function HomeScreen() {
         Your assistant to organize trips easily and quickly
       </Text>
 
-      {/* Trip card */}
-      {trips.length > 0 && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{trips[0].name}</Text>
-          <Text>From: {trips[0].departureCity}</Text>
-          <Text>To: {trips[0].arrivalCity}</Text>
-          <Text>Start: {formatDate(trips[0].startTime)}</Text>
-          <Text>End: {formatDate(trips[0].endTime)}</Text>
-        </View>
-      )}
+      {trips.length > 0 && <TripCard trip={trips[0]} />}
 
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
         <Text style={styles.buttonText}>+ Create new trip</Text>
       </TouchableOpacity>
 
-      <Modal
+      <TripFormModal
         visible={modalVisible}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>New trip</Text>
-
-            <TextInput
-              placeholder="Trip name"
-              value={formData.name}
-              onChangeText={text => handleChange('name', text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Departure city"
-              value={formData.departureCity}
-              onChangeText={text => handleChange('departureCity', text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Arrival city"
-              value={formData.arrivalCity}
-              onChangeText={text => handleChange('arrivalCity', text)}
-              style={styles.input}
-            />
-            {/* Start date */}
-            <Pressable onPress={() => setShowStartTimePicker(true)} style={styles.dateInput}>
-              <Text>{formData.startTime ? formatDate(formData.startTime) : 'Select start date'}</Text>
-            </Pressable>
-            {showStartTimePicker && (
-              <DateTimePicker
-                value={formData.startTime ? new Date(formData.startTime) : new Date()}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={(event, selectedDate) => {
-                  setShowStartTimePicker(false);
-                  if (selectedDate) {
-                    handleChange('startTime', selectedDate.toISOString());
-                  }
-                }}
-              />
-            )}
-
-            {/* End date */}
-            <Pressable onPress={() => setShowEndTimePicker(true)} style={styles.dateInput}>
-              <Text>{formData.endTime ? formatDate(formData.endTime) : 'Select end date'}</Text>
-            </Pressable>
-            {showEndTimePicker && (
-              <DateTimePicker
-                value={formData.endTime ? new Date(formData.endTime) : new Date()}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={(event, selectedDate) => {
-                  setShowEndTimePicker(false);
-                  if (selectedDate) {
-                    handleChange('endTime', selectedDate.toISOString());
-                  }
-                }}
-              />
-            )}
-
-            <View style={styles.modalButtons}>
-              <Pressable onPress={() => setModalVisible(false)} style={styles.cancelButton}>
-                <Text style={styles.cancelText}>Cancel</Text>
-              </Pressable>
-              <Pressable onPress={handleSave} style={styles.saveButton}>
-                <Text style={styles.saveText}>Save</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        formData={formData}
+        onChange={handleChange}
+        onSave={handleSave}
+        onCancel={() => setModalVisible(false)}
+        showStartTimePicker={showStartTimePicker}
+        setShowStartTimePicker={setShowStartTimePicker}
+        showEndTimePicker={showEndTimePicker}
+        setShowEndTimePicker={setShowEndTimePicker}
+        styles={styles}
+      />
     </View>
   );
 }
+
+// ...styles...
 
 const styles = StyleSheet.create({
   container: {
