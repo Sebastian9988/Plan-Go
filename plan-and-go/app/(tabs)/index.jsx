@@ -11,7 +11,6 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Platform } from 'react-native';
 
-
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,6 +20,7 @@ export default function HomeScreen() {
     departureCity: '',
     arrivalCity: '',
   });
+  const [trips, setTrips] = useState([]); // New state for trips
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
@@ -33,15 +33,38 @@ export default function HomeScreen() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleSave = () => {
+    setTrips(prev => [formData, ...prev]);
+    setFormData({
+      name: '',
+      startTime: '',
+      endTime: '',
+      departureCity: '',
+      arrivalCity: '',
+    });
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido a Plan&Go</Text>
+      <Text style={styles.title}>Welcome to Plan&Go</Text>
       <Text style={styles.subtitle}>
-        Tu asistente para organizar viajes de forma fácil y rápida
+        Your assistant to organize trips easily and quickly
       </Text>
 
+      {/* Trip card */}
+      {trips.length > 0 && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{trips[0].name}</Text>
+          <Text>From: {trips[0].departureCity}</Text>
+          <Text>To: {trips[0].arrivalCity}</Text>
+          <Text>Start: {formatDate(trips[0].startTime)}</Text>
+          <Text>End: {formatDate(trips[0].endTime)}</Text>
+        </View>
+      )}
+
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-        <Text style={styles.buttonText}>+ Crear nuevo viaje</Text>
+        <Text style={styles.buttonText}>+ Create new trip</Text>
       </TouchableOpacity>
 
       <Modal
@@ -52,29 +75,29 @@ export default function HomeScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Nuevo viaje</Text>
+            <Text style={styles.modalTitle}>New trip</Text>
 
             <TextInput
-              placeholder="Nombre del viaje"
+              placeholder="Trip name"
               value={formData.name}
               onChangeText={text => handleChange('name', text)}
               style={styles.input}
             />
             <TextInput
-              placeholder="Ciudad de origen"
+              placeholder="Departure city"
               value={formData.departureCity}
               onChangeText={text => handleChange('departureCity', text)}
               style={styles.input}
             />
             <TextInput
-              placeholder="Ciudad destino"
+              placeholder="Arrival city"
               value={formData.arrivalCity}
               onChangeText={text => handleChange('arrivalCity', text)}
               style={styles.input}
             />
-            {/* Fecha inicio */}
+            {/* Start date */}
             <Pressable onPress={() => setShowStartTimePicker(true)} style={styles.dateInput}>
-              <Text>{formData.startTime ? formatDate(formData.startTime) : 'Seleccionar fecha de inicio'}</Text>
+              <Text>{formData.startTime ? formatDate(formData.startTime) : 'Select start date'}</Text>
             </Pressable>
             {showStartTimePicker && (
               <DateTimePicker
@@ -90,9 +113,9 @@ export default function HomeScreen() {
               />
             )}
 
-            {/* Fecha fin */}
+            {/* End date */}
             <Pressable onPress={() => setShowEndTimePicker(true)} style={styles.dateInput}>
-              <Text>{formData.endTime ? formatDate(formData.endTime) : 'Seleccionar fecha de fin'}</Text>
+              <Text>{formData.endTime ? formatDate(formData.endTime) : 'Select end date'}</Text>
             </Pressable>
             {showEndTimePicker && (
               <DateTimePicker
@@ -108,17 +131,12 @@ export default function HomeScreen() {
               />
             )}
 
-
             <View style={styles.modalButtons}>
               <Pressable onPress={() => setModalVisible(false)} style={styles.cancelButton}>
-                <Text style={styles.cancelText}>Cancelar</Text>
+                <Text style={styles.cancelText}>Cancel</Text>
               </Pressable>
-              <Pressable onPress={() => {
-                // acá podrías guardar los datos
-                console.log('Viaje creado:', formData);
-                setModalVisible(false);
-              }} style={styles.saveButton}>
-                <Text style={styles.saveText}>Guardar</Text>
+              <Pressable onPress={handleSave} style={styles.saveButton}>
+                <Text style={styles.saveText}>Save</Text>
               </Pressable>
             </View>
           </View>
@@ -205,11 +223,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   dateInput: {
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 8,
-  padding: 10,
-  marginBottom: 12,
-  backgroundColor: '#f9f9f9',
-},
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12,
+    backgroundColor: '#f9f9f9',
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#e6f2ff',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
 });
