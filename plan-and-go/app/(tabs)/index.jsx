@@ -15,14 +15,14 @@ import { Platform } from 'react-native';
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [formData, setFormData] = useState({
-    nombre: '',
-    inicio: '',
-    fin: '',
-    origen: '',
-    destino: '',
+    name: '',
+    startTime: '',
+    endTime: '',
+    departureCity: '',
+    arrivalCity: '',
   });
-  const [showInicioPicker, setShowInicioPicker] = useState(false);
-  const [showFinPicker, setShowFinPicker] = useState(false);
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
   const formatDate = (date) => {
     if (!date) return '';
@@ -56,53 +56,53 @@ export default function HomeScreen() {
 
             <TextInput
               placeholder="Nombre del viaje"
-              value={formData.nombre}
-              onChangeText={text => handleChange('nombre', text)}
+              value={formData.name}
+              onChangeText={text => handleChange('name', text)}
               style={styles.input}
             />
             <TextInput
               placeholder="Ciudad de origen"
-              value={formData.origen}
-              onChangeText={text => handleChange('origen', text)}
+              value={formData.departureCity}
+              onChangeText={text => handleChange('departureCity', text)}
               style={styles.input}
             />
             <TextInput
               placeholder="Ciudad destino"
-              value={formData.destino}
-              onChangeText={text => handleChange('destino', text)}
+              value={formData.arrivalCity}
+              onChangeText={text => handleChange('arrivalCity', text)}
               style={styles.input}
             />
             {/* Fecha inicio */}
-            <Pressable onPress={() => setShowInicioPicker(true)} style={styles.dateInput}>
-              <Text>{formData.inicio ? formatDate(formData.inicio) : 'Seleccionar fecha de inicio'}</Text>
+            <Pressable onPress={() => setShowStartTimePicker(true)} style={styles.dateInput}>
+              <Text>{formData.startTime ? formatDate(formData.startTime) : 'Seleccionar fecha de inicio'}</Text>
             </Pressable>
-            {showInicioPicker && (
+            {showStartTimePicker && (
               <DateTimePicker
-                value={formData.inicio ? new Date(formData.inicio) : new Date()}
+                value={formData.startTime ? new Date(formData.startTime) : new Date()}
                 mode="date"
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                 onChange={(event, selectedDate) => {
-                  setShowInicioPicker(false);
+                  setShowStartTimePicker(false);
                   if (selectedDate) {
-                    handleChange('inicio', selectedDate.toISOString());
+                    handleChange('startTime', selectedDate.toISOString());
                   }
                 }}
               />
             )}
 
             {/* Fecha fin */}
-            <Pressable onPress={() => setShowFinPicker(true)} style={styles.dateInput}>
-              <Text>{formData.fin ? formatDate(formData.fin) : 'Seleccionar fecha de fin'}</Text>
+            <Pressable onPress={() => setShowEndTimePicker(true)} style={styles.dateInput}>
+              <Text>{formData.endTime ? formatDate(formData.endTime) : 'Seleccionar fecha de fin'}</Text>
             </Pressable>
-            {showFinPicker && (
+            {showEndTimePicker && (
               <DateTimePicker
-                value={formData.fin ? new Date(formData.fin) : new Date()}
+                value={formData.endTime ? new Date(formData.endTime) : new Date()}
                 mode="date"
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                 onChange={(event, selectedDate) => {
-                  setShowFinPicker(false);
+                  setShowEndTimePicker(false);
                   if (selectedDate) {
-                    handleChange('fin', selectedDate.toISOString());
+                    handleChange('endTime', selectedDate.toISOString());
                   }
                 }}
               />
