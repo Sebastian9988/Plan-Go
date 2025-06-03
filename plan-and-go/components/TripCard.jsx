@@ -14,7 +14,7 @@ export default function TripCard({ trip, onDelete }) {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push({ pathname: '/trip-detail', params: { ...trip } })}
+      onPress={() => router.push({ pathname: '/TripDetailScreen', params: { ...trip } })}
     >
       <View style={styles.header}>
         <Text style={styles.cardTitle}>{trip.name}</Text>
