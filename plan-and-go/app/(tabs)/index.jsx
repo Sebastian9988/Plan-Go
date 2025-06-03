@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import TripCard from '../../components/TripCard';
 import TripFormModal from '../../components/TripFormModal';
-import { ScrollView } from 'react-native';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,9 +38,9 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Plan&Go</Text>
+      <Text style={styles.title}>Bienvenido a Plan&Go</Text>
       <Text style={styles.subtitle}>
-        Your assistant to organize trips easily and quickly
+        Tu asistente para organizar viajes de forma fácil y rápida
       </Text>
 
       <ScrollView
@@ -58,7 +57,7 @@ export default function HomeScreen() {
       </ScrollView>
 
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-        <Text style={styles.buttonText}>+ Create new trip</Text>
+        <Text style={styles.buttonText}>+ Crear nuevo viaje</Text>
       </TouchableOpacity>
 
       <TripFormModal
@@ -161,9 +160,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: '#f9f9f9',
   },
-    tripsScroll: {
+  tripsScroll: {
     width: '100%',
-    maxHeight: 300, // Ajusta este valor según tu preferencia
+    maxHeight: 300,
     marginBottom: 24,
   },
 });
